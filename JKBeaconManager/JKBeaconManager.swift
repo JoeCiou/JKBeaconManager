@@ -28,6 +28,7 @@ public class JKBeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralM
     public var beacons: [JKBeacon]{
         return beaconRegionsBeacons.values.reduce([], { $0 + $1 })
     }
+    public var specificBeaconKeys: [JKBeaconKey]? = nil
     
     let locationManager: CLLocationManager = CLLocationManager()
     var peripheralManager: CBPeripheralManager!
@@ -85,7 +86,11 @@ public class JKBeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralM
     }
     
     public func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
-        beaconRegionsBeacons[region] = beacons.map({ JKBeacon(beacon: $0) })
+        if let specificBeaconKeys = specificBeaconKeys{
+            beaconRegionsBeacons[region] = beacons.map({ JKBeacon(beacon: $0) }).filter({ specificBeaconKeys.contains($0) })
+        }else{
+            beaconRegionsBeacons[region] = beacons.map({ JKBeacon(beacon: $0) })
+        }
         
         let beacons = self.beacons
         delegate?.beaconManager?(self, didRangeBeacons: beacons)
