@@ -43,13 +43,13 @@ public class JKBeaconManager: NSObject, CLLocationManagerDelegate, CBPeripheralM
         }
     }
     
-    public convenience init(beaconUUID: String){
+    public convenience init(beaconUUID: UUID){
         self.init(beaconUUIDs: [beaconUUID])
     }
     
-    public init(beaconUUIDs: [String]){
+    public init(beaconUUIDs: [UUID]){
         for uuid in beaconUUIDs{
-            let region = CLBeaconRegion(proximityUUID: UUID(uuidString: uuid)!, identifier: "Beacon\(uuid)")
+            let region = CLBeaconRegion(proximityUUID: uuid, identifier: "Beacon\(uuid.uuidString)")
             region.notifyOnEntry = true
             beaconRegions.append(region)
         }
